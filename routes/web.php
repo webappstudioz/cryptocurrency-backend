@@ -21,10 +21,10 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
 
     /* Without authorization routes */
     $router->post('login', 'AuthController@login');  
+    $router->get('get/time/zone', 'TimeZoneController@getTimeZone');
     
     $router->group([ 'middleware' => 'auth' ], function ($router) { 
 
-        $router->get('get/time/zone', 'TimeZoneController@getTimeZone');
         $router->post('store/time/zone', 'TimeZoneController@storeTimeZone');
     });
 });
