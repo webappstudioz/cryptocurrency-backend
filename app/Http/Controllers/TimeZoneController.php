@@ -19,13 +19,38 @@ class TimeZoneController extends Controller
     public function getTimeZone(Request $request)
     {
         try {
-            $timezones = TimeZone::where('user_id',authId())->get();
+            $timezones = TimeZone::get();
             $data = [];
             foreach($timezones as $key => $state) { 
                 array_push($data, [
                     'id'                => encryptData($state->id),
                     'time_zone'         => $state->time_zone,
-                    'winning_number'    =>  $state->winning_number
+                 ]);
+            } 
+
+            return $this->apiResponse('success', '200', 'Time Zone list', $data); 
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        }  
+    }
+    /* End Method getTimeZone */ 
+
+        /*  
+    Method Name:    getTimeZone
+    Purpose:        Get time Zone
+    Params:         []
+    */
+    public function getGameResults(Request $request)
+    {
+        try {
+            $timezones = TimeZone::get();
+            $data = [];
+            foreach($timezones as $key => $state) { 
+                array_push($data, [
+                    'id'                => encryptData($state->id),
+                    'time_zone'         => $state->time_zone,
+                    'winning_Number'    => $state->winning_number,
+                    'date'              => $state->updated_at
                  ]);
             } 
 
@@ -45,7 +70,7 @@ class TimeZoneController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'id'              =>  [ 'required', new EncryptExist( TimeZone::class , 'id' ) ],
-            'winning_number'  =>   'required' ,
+            'winning_Number'  =>   'required' ,
         ]);
 
         if ($validator->fails()) { 

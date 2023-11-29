@@ -17,28 +17,28 @@ class TimeZoneSeeder extends Seeder
     public function run()
     {
         TimeZone::updateOrCreate([
-            'time_zone'      => '1',
+            'time_zone'      => '11:00 am morning',
         ],[
             'user_id'       => 1,
             'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),  
         ]);
         TimeZone::updateOrCreate([
-            'time_zone'     => '2',
+            'time_zone'     => '3:00 pm afternoon',
         ],[
             'user_id'       => 1,
             'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),  
         ]);
         TimeZone::updateOrCreate([
-            'time_zone'     => '3',
+            'time_zone'     => '6:00 pm evening',
         ],[
             'user_id'       => 1,
             'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),  
         ]);
         TimeZone::updateOrCreate([
-            'time_zone'     => '4',
+            'time_zone'     => '9:00 pm night',
         ],[
             'user_id'       => 1,
             'created_at'    => date('Y-m-d H:i:s'),

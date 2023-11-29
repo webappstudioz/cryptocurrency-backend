@@ -21,10 +21,11 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
 
     /* Without authorization routes */
     $router->post('login', 'AuthController@login');  
-    $router->get('get/time/zone', 'TimeZoneController@getTimeZone');
-    
-    $router->group([ 'middleware' => 'auth' ], function ($router) { 
+    $router->get('timezone/list', 'TimeZoneController@getTimeZone');
+    $router->get('get/game/results', 'TimeZoneController@getGameResults');
 
-        $router->post('store/time/zone', 'TimeZoneController@storeTimeZone');
+    $router->group([ 'middleware' => 'auth' ], function ($router) { 
+        $router->post('store/results', 'TimeZoneController@storeTimeZone');
     });
+    
 });
