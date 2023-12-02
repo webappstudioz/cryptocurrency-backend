@@ -30,6 +30,7 @@ return [
         'ASSIGN_DONE'       => 'has been assigned successfully',
         'FETCH_DONE'        => 'has been fetched successfully',
         'UPDATE_DONE'       => 'has been updated successfully',
+        'SAVED_DONE'        => 'has been saved successfully',
         'CREATE_DONE'       => 'has been created successfully',
         'ADD_DONE'          => 'has been added successfully',
         'UPLOAD_DONE'       => 'has been uploaded successfully',

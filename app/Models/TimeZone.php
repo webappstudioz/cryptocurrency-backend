@@ -13,4 +13,8 @@ class TimeZone extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function result() {
+		return $this->hasOne(StoreTimeZone::class)->where('date',date('Y-m-d'));
+	}
 }

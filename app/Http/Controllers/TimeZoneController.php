@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TimeZone;
+use App\Models\{StoreTimeZone,TimeZone};
 use App\Rules\EncryptExist;
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ class TimeZoneController extends Controller
     }
     /* End Method getTimeZone */ 
 
-        /*  
+    /*  
     Method Name:    getTimeZone
     Purpose:        Get time Zone
     Params:         []
@@ -49,12 +49,12 @@ class TimeZoneController extends Controller
                 array_push($data, [
                     'id'                => encryptData($state->id),
                     'time_zone'         => $state->time_zone,
-                    'winning_Number'    => $state->winning_number,
-                    'date'              => $state->updated_at
+                    'winning_Number'    => $state->result ? $state->result->winning_number : Null,
+                    'date'              => $state->result ? $state->result->date : Null
                  ]);
             } 
 
-            return $this->apiResponse('success', '200', 'Time Zone list', $data); 
+            return $this->apiResponse('success', '200', 'Game results '.config('constants.SUCCESS.FETCH_DONE'), $data); 
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage());
         }  
@@ -79,9 +79,15 @@ class TimeZoneController extends Controller
 
 
         try {
-            $timezones = TimeZone::where('id',decryptData($request->id))->update(['winning_number' => $request->winning_number]);
+            StoreTimeZone::updateOrCreate([
+                'time_zone_id'  => decryptData($request->id),
+                'user_id'       => authId(),
+                'date'          => date('Y-m-d')
+            ],[
+                'winning_number' => $request->winning_Number
+            ]);
             
-            return $this->apiResponse('success', '200', 'Time Zone '.config('constants.SUCCESS.UPDATE_DONE')); 
+            return $this->apiResponse('success', '200', 'Result '.config('constants.SUCCESS.SAVED_DONE')); 
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage());
         }  
