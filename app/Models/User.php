@@ -39,7 +39,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
          * @var string[]
          */
     protected $fillable = [
-        'name', 
+        'first_name', 
+        'last_name', 
         'email',
         'role_id',
         'parent_id',
@@ -60,6 +61,5 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function userdetail() {
 		return $this->hasOne(UserDetail::class);
 	}
-
 
 }

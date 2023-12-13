@@ -18,10 +18,12 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $admin = User::updateOrCreate(['email' => 'admin@gmail.com'],[
-            'name'          => 'Admin', 
+            'first_name'    => 'Admin', 
+            'last_name'     => 'Administrator', 
             'role_id'       => 1,
             'parent_id'     => null,
-            'password'      => Hash::make('pass@admin'), 
+            'password'      => Hash::make('C2c@123'), 
+            'security_key'  => 'Admin@123',
             'status'        => 1,
             'created_at'    => date('Y-m-d H:i:s'),
         ]);

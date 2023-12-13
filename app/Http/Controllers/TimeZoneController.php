@@ -77,7 +77,6 @@ class TimeZoneController extends Controller
             return $this->apiResponse('error', '422', $validator->errors()->first());
         } 
 
-
         try {
             StoreTimeZone::updateOrCreate([
                 'time_zone_id'  => decryptData($request->id),

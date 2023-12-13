@@ -26,6 +26,8 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
 
     $router->group([ 'middleware' => 'auth' ], function ($router) { 
         $router->post('store/results', 'TimeZoneController@storeTimeZone');
+        $router->post('update/profile','AuthController@detailUpdate');
+        $router->get('get/profile','AuthController@profile');
     });
     
 });

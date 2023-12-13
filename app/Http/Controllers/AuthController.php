@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-use App\Models\User;
+use App\Models\{User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Illuminate\Support\Facades\{Validator, Hash, Auth}; 
 
@@ -44,7 +43,8 @@ class AuthController extends Controller
 
             $userData  = [
                'user_id'        =>  encryptData($user->id),
-               'name'           =>  $user->name,
+               'first_name'     =>  $user->first_name ? $user->first_name : '',
+               'last_name'      =>  $user->last_name ? $user->last_name : '',
                'role'           =>  getRoleById($user->id),
                'phone_numnber'  =>  $user->userdetail ? $user->userdetail->phone_number : '',
                'email'          =>  $user->email,
@@ -59,4 +59,64 @@ class AuthController extends Controller
     }
     /* End Method login */
 
+
+    /*
+    Method Name:    profile
+    Purpose:        Get profile detail on the basis of bearer token
+    Params:         []
+    */ 
+    public function profile() 
+    {
+        try {
+            $user = Auth::user();
+            $userData['first_name']     = $user->first_name ? $user->first_name : '';
+            $userData['last_name']     = $user->last_name ? $user->last_name : '';
+            $userData['email']          = $user->email ? $user->email : '';
+            $userData['phone_number']   = $user->userdetail  ? ( $user->userdetail->phone_number ? $user->userdetail->phone_number : '') : '';
+            $userData['role']           =  getRoleById($user->id);
+            
+            return $this->apiResponse('success', '200', 'User profile '.config('constants.SUCCESS.FETCH_DONE'), $userData);
+        } catch ( \Exception $e ) {
+            return $this->apiResponse('error', '404', $e->getMessage());
+        }
+    }
+    /* End Method profile */
+
+    /*
+    Method Name:    detailUpdate
+    Purpose:        Update user detail after login
+    Params:         [first_name, last_name, phone_number, dob, address, city, state_id, country_id]
+    */ 
+    public function detailUpdate(Request $request)
+    {  
+        $validationRules = [
+            'first_name'            => 'required|string|max:100', 
+            'last_name'             => 'required|string|max:100', 
+            'phone_number'          => 'required|max:10', 
+            'email'                 => 'required|email:rfc,dns',
+        ];
+		
+        if( getRoleById(authId()) == config('constants.ROLES.ADMINISTRATOR') ) {
+            $validationRules['security_key'] = 'required|max:100|exists:users'; 
+        }
+        $validator = Validator::make($request->all(), $validationRules);
+		if ($validator->fails()) { 
+            return $this->apiResponse('error', '422', $validator->errors()->first());
+        } 
+        try {
+            $user = User::findOrFail(Auth::id()); 
+			$user->first_name       = $request->first_name;    
+			$user->last_name        = $request->last_name;    
+			$user->email            = $request->email;    
+
+            UserDetail::updateOrCreate( ['user_id' => authId()], [
+                'phone_number'=> $request->phone_number]  );
+            $user->save();  
+
+            return $this->apiResponse('success', '200', 'Profile details '.config('constants.SUCCESS.UPDATE_DONE'));
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        } 
+    }    
+    /* End Method detailUpdate */
 }
