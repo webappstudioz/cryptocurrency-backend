@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesTableSeeder::class,
             UsersTableSeeder::class,
-            TimeZoneSeeder::class
+            TimeZoneSeeder::class,
+            CountryTableSeeder::class,
+            StateTableSeeder::class
         ]);
     }
 }

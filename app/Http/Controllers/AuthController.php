@@ -119,4 +119,50 @@ class AuthController extends Controller
         } 
     }    
     /* End Method detailUpdate */
+
+    /*
+    Method Name:    register
+    Purpose:        Register user with their infromation
+    Params:         [first_name, last_name, phone_number, email, password]
+    */ 
+    public function register(Request $request)
+    {  
+        $validationRules = [
+            'first_name'            => 'required|string|max:100', 
+            'last_name'             => 'string|max:100', 
+            'phone_number'          => 'required|max:10', 
+            'email'                 => 'required|unique:users,email|email:rfc,dns',
+            'password'              => 'required|min:6|same:confirm_password',
+            'confirm_password'      => 'required|min:6',
+        ];
+		
+        $validator = Validator::make($request->all(), $validationRules);
+		if ($validator->fails()) { 
+            return $this->apiResponse('error', '422', $validator->errors()->first());
+        } 
+        try {
+            $user = User::create([
+                'first_name'    => $request->first_name,
+                'last_name'     => $request->last_name ? $request->last_name : Null,
+                'email'         => $request->email,
+                'password'      => Hash::make($request->password),
+                'phone_number'  => $request->phone_number,
+                'role_id'       => 2,
+            ]);
+
+            $userData  = [
+                // 'user_id'        =>  encryptData($user->id),
+                // 'first_name'     =>  $user->first_name ? $user->first_name : '',
+                // 'last_name'      =>  $user->last_name ? $user->last_name : '',
+                // 'role'           =>  getRoleById($user->id),
+                // 'phone_numnber'  =>  $user->userdetail ? $user->userdetail->phone_number : '',
+                'email'          =>  $user->email,
+                'bearer'         => Auth::attempt($request->only(['email', 'password']))
+             ];
+            return $this->apiResponse('success', '200', 'User '.config('constants.SUCCESS.ADD_DONE'),$userData);
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        } 
+    }    
+    /* End Method register */
 }

@@ -24,10 +24,18 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
     $router->get('timezone/list', 'TimeZoneController@getTimeZone');
     $router->get('get/game/results', 'TimeZoneController@getGameResults');
 
+    $router->group([ 'prefix' => 'get'], function ($router) { 
+        $router->get('countries', 'CommonController@countries');
+        $router->post('states', 'CommonController@stateByCountry');
+    });
+
     $router->group([ 'middleware' => 'auth' ], function ($router) { 
         $router->post('store/results', 'TimeZoneController@storeTimeZone');
         $router->post('update/profile','AuthController@detailUpdate');
         $router->get('get/profile','AuthController@profile');
     });
     
+    $router->group([ 'prefix' => 'user' ], function ($router) { 
+        $router->post('register', 'AuthController@register');
+    });
 });
