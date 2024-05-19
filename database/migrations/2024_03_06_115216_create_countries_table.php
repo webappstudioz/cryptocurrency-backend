@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('short_code');
             $table->string('country_flag');
+            $table->string('phonecode');
+            $table->tinyInteger('status')->default(1); 
             $table->timestamps();
         });
     }
