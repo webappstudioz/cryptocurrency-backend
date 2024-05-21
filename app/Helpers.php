@@ -1,14 +1,11 @@
 <?php
 use Illuminate\Support\Facades\{ Auth}; 
-
+use App\Models\{Role,User};
 /*
 Method Name:    encryptData
 Purpose:        encrypt data
 Params:         [data, encryptionMethod, secret]
 */
-
-use App\Models\Role;
-use App\Models\User;
 
 if (!function_exists('encryptData')) {
     function encryptData(string $data, string $encryptionMethod = null, string $secret = null)

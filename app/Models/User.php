@@ -47,7 +47,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'user_name',
+        'referrel_Code',
+        'phone_number',
+        'country_id',
+        'security_key',
+        'verified',
+        'term_condition',
+
     ];
 
     /**

@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             TimeZoneSeeder::class,
             CountryTableSeeder::class,
-            StateTableSeeder::class
+            StateTableSeeder::class,
+            TemplatTableSeeder::class,
+            SmtpTableSeeder::class,
         ]);
     }
 }

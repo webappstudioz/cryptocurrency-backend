@@ -64,4 +64,9 @@ return [
     'encryptionMethod'      => env('ENC_DEC_METHOD', ''),
     'VALID_FILE_DOCUMENTS'  =>  "image/png,image/jpeg,image/gif,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,text/plain,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,audio/mpeg,audio/x-wav,application/octet-stream",
 
+    'COMPANYNAME'           => env('COMPANYNAME','C2C Pvt. Ltd.'),
+
+    'OTP_VERIFICATION'  => env('OTP_VERIFICATION', '/otp-verification?token='),
+    'FRONTEND_URL'      => env('FRONTEND_URL', 'https://crerdentia.biz'),
+
 ];

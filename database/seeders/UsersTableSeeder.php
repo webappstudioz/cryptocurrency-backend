@@ -17,18 +17,18 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $admin = User::updateOrCreate(['email' => 'admin@gmail.com'],[
+        $admin = User::updateOrCreate(['email' => 'adminc2c@yopmail.com'],[
+            'user_name'     => 'C2C1111',
             'first_name'    => 'Admin', 
             'last_name'     => 'Administrator', 
             'role_id'       => 1,
             'parent_id'     => null,
-            'password'      => Hash::make('C2c@123'), 
-            'security_key'  => 'Admin@123',
+            'password'      => Hash::make('Admin@c2c'), 
+            'security_key'  => 'Admin@c2c',
             'status'        => 1,
+            'phone_number'  =>  '1234567891',
+            'verified'      =>  1,
             'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-        UserDetail::updateOrCreate(['user_id' => $admin->id],[
-            'phone_number'  =>  '1234567891'
-        ]);
+        ]);  
     }
 }

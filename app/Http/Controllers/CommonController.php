@@ -39,7 +39,8 @@ class CommonController extends Controller
                     'id' => encryptData($country->id),
                     'name' => $country->name,
                     'country_flag' => $country->country_flag,
-                    'short_code'    =>  $country->short_code
+                    'short_code'    =>  $country->short_code,
+                    'country_Code'  => $country->phonecode
                 ]);
             } 
 
