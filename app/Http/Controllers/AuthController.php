@@ -6,6 +6,7 @@ use App\Models\{TokenManagement, User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Illuminate\Support\Facades\{Validator, Hash, Auth}; 
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -20,11 +21,10 @@ class AuthController extends Controller
     {
         //validate incoming request
 		$validator = Validator::make($request->all(), [
-                'email'     => 'required|email',
+                'email'     => 'required',
                 'password'  => 'required|string|min:6',
             ], [
                 'email.required'    => 'We need to know your email address',
-                'email.email'       => 'Provide a an valid email address',
                 'password.required' => 'You can not left password empty.',
                 'password.string'   => 'Password field must be a string.'
             ]);
@@ -32,21 +32,25 @@ class AuthController extends Controller
             return $this->apiResponse('error', '422', $validator->errors()->all());
         } 
         try { 
-            $user = User::where('email', $request->email)->first(); 
+            $user = User::where(function($query) use($request){
+                $query->where('email', $request->email)
+                ->orWhere('user_name',$request->email);
+            })->first(); 
             
             //check user existance 
             if(!$user || !Hash::check($request->password, $user->password))
                 return $this->apiResponse('error', '400', config('constants.ERROR.WRONG_CREDENTIAL'));
             //check that account is verified 
-            if($user->status != '1') 
+            if($user->status != '1' || $user->verified != '1') 
                 return $this->apiResponse('error', '404', config('constants.ERROR.ACCOUNT_ISSUE'));
-
+            $request->merge(['email' => $user->email]);
             $userData  = [
                'user_id'        =>  encryptData($user->id),
+               'user_name'      => $user->user_name,
                'first_name'     =>  $user->first_name ? $user->first_name : '',
                'last_name'      =>  $user->last_name ? $user->last_name : '',
                'role'           =>  getRoleById($user->id),
-               'phone_numnber'  =>  $user->userdetail ? $user->userdetail->phone_number : '',
+               'phone_numnber'  =>  $user->phone_number ? $user->phone_number : '',
                'email'          =>  $user->email,
                'bearer'         => Auth::attempt($request->only(['email', 'password']))
             ];
@@ -109,8 +113,7 @@ class AuthController extends Controller
 			$user->last_name        = $request->last_name;    
 			$user->email            = $request->email;    
 
-            UserDetail::updateOrCreate( ['user_id' => authId()], [
-                'phone_number'=> $request->phone_number]  );
+            
             $user->save();  
 
             return $this->apiResponse('success', '200', 'Profile details '.config('constants.SUCCESS.UPDATE_DONE'));
@@ -181,7 +184,7 @@ class AuthController extends Controller
                 'email'     => $request->email,
                 'token'     => $token
             ];
-            return $this->apiResponse('success', '200', 'User '.config('constants.SUCCESS.ADD_DONE'),$userData);
+            return $this->apiResponse('success', '200', 'Welcome to '.config('constants.COMPANYNAME').' your account has been created successfully. please verify your OTP for first login.',$userData);
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage());
         } 
@@ -189,8 +192,8 @@ class AuthController extends Controller
     /* End Method register */
 
     /*
-    Method Name:    register
-    Purpose:        Register user with their infromation
+    Method Name:    otpResend
+    Purpose:        Send the otp to verify the user
     Params:         [first_name, last_name, phone_number, email, password]
     */ 
     public function otpResend($token)
@@ -228,6 +231,66 @@ class AuthController extends Controller
             return $this->apiResponse('error', '400', $e->getMessage());
         } 
     }    
-    /* End Method register */
+    /* End Method otpResend */
     
+    /*
+    Method Name:    register
+    Purpose:        Register user with their infromation
+    Params:         [first_name, last_name, phone_number, email, password]
+    */ 
+    public function otpVerify(Request $request)
+    {  
+        
+        $validationRules = [
+            'token'           => 'required', 
+            'otp'             => 'required', 
+        ];
+		
+        $validator = Validator::make($request->all(), $validationRules);
+		if ($validator->fails()) { 
+            return $this->apiResponse('error', '422', $validator->errors()->first());
+        } 
+		if (TokenManagement::where('token',$request->token)->where('otp',$request->otp)->count() == 0) { 
+            return $this->apiResponse('error', '422', 'Please provide a valid token and OTP');
+        } 
+        $token_detail = TokenManagement::where('token',$request->token)->where('otp',$request->otp)->first();
+
+        $createdAt = Carbon::parse($token_detail->updated_at);
+        $now = Carbon::now();
+
+        if ($createdAt->diffInMinutes($now) > 60) {
+            return $this->apiResponse('error', '422', 'Token expired');
+        }
+       
+        try {
+            $userName = '';
+            do {
+                $userName =  'C2C'.random_int(1000, 9999);
+            }while(User::where('user_name',$userName)->count());
+
+            User::where('email',$token_detail->email)->update(['user_name'=> $userName,'verified' => 1]);
+            
+            // $token_detail->delete();
+            $template = $this->getTemplateByName('THANKS_EMAIL');
+                if( $template ) { 
+                    //preparing data to send in mail 
+                
+                    $user = User::where('email',$token_detail->email)->first();  
+                    $link               = config('constants.FRONTEND_URL'). config('constants.LOGIN') ;
+                    $stringToReplace    = ['{{$name}}', '{{$token}}','{{$user_name}}' ];
+                    $stringReplaceWith  = [$user->first_name.' '.$user->last_name, $link ,$userName ];
+                    $newval             = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+                    //mail logs
+                    $emailData          = $this->mailData($user->email, $template->subject, $newval, 'THANKS_EMAIL', $template->id, '', '', authId());
+
+                    $this->mailSend($emailData);
+            }
+            $token_detail->delete();
+
+            return $this->apiResponse('success', '200', 'You have successfully verified your email address.');
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        } 
+    }    
+    /* End Method register */
 }

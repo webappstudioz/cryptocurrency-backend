@@ -38,5 +38,6 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
     $router->group([ 'prefix' => 'user' ], function ($router) { 
         $router->post('register', 'AuthController@register');
         $router->get('otp/resend/{token}', 'AuthController@otpResend');
+        $router->post('otp/verify', 'AuthController@otpVerify');
     });
 });
