@@ -67,6 +67,6 @@ return [
     'COMPANYNAME'           => env('COMPANYNAME','C2C Pvt. Ltd.'),
 
     'OTP_VERIFICATION'  => env('OTP_VERIFICATION', '/otp-verification?token='),
-    'FRONTEND_URL'      => env('FRONTEND_URL', 'https://crerdentia.biz'),
+    'FRONTEND_URL'      => env('FRONTEND_URL', 'http://localhost:3000'),
 
 ];
