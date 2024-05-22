@@ -81,4 +81,25 @@ if (!function_exists('authId')) {
     }
 }
 /* End Method authId */
+
+/*
+Method Name:    authRole
+Purpose:        To get role from current login user
+Params:         ['']
+*/
+if (!function_exists('authRole')){
+    function authRole( ) {
+        if( !Auth::check())
+            return null; 
+        else {
+            $loginRole = explode('-', Auth::user()->roles[0]->name)[0];
+            if(Auth::user()->hasRole(config('constants.ROLES.COMPANY'))){
+                $loginRole = 'Client';
+            }
+            return $loginRole; 
+        }
+        
+    }
+}
+/* End Method authRole */
 ?>

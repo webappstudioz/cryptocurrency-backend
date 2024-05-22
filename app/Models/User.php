@@ -65,10 +65,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'role_id',
     ];
-
-    public function userdetail() {
-		return $this->hasOne(UserDetail::class);
-	}
 
 }

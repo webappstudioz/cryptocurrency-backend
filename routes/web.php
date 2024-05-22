@@ -33,11 +33,16 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->post('store/results', 'TimeZoneController@storeTimeZone');
         $router->post('update/profile','AuthController@detailUpdate');
         $router->get('get/profile','AuthController@profile');
+        $router->group([ 'prefix' => 'user' ], function ($router) { 
+            $router->get('list', 'UserController@getList');
+        });
     });
     
     $router->group([ 'prefix' => 'user' ], function ($router) { 
         $router->post('register', 'AuthController@register');
         $router->get('otp/resend/{token}', 'AuthController@otpResend');
         $router->post('otp/verify', 'AuthController@otpVerify');
+
+       
     });
 });

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{TokenManagement, User,UserDetail};
+use App\Models\{Country, TokenManagement, User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Illuminate\Support\Facades\{Validator, Hash, Auth}; 
 use Illuminate\Support\Str;
@@ -47,6 +47,8 @@ class AuthController extends Controller
             $userData  = [
                'user_id'        =>  encryptData($user->id),
                'user_name'      => $user->user_name,
+               'country_id'     => $user->country_id ? encryptData($user->country_id) : '',
+               'country_name'     => $user->country_id ? Country::find($user->country_id)->name : '',
                'first_name'     =>  $user->first_name ? $user->first_name : '',
                'last_name'      =>  $user->last_name ? $user->last_name : '',
                'role'           =>  getRoleById($user->id),
