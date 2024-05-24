@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('security_key')->nullable();
             $table->tinyInteger('status')->default(1); 
             $table->tinyInteger('verified')->default(0);
+            $table->date('joining_date')->nullable();
             $table->tinyInteger('term_condition')->default(0);
             $table->rememberToken();
             $table->timestamps();

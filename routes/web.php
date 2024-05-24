@@ -35,6 +35,9 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->get('get/profile','AuthController@profile');
         $router->group([ 'prefix' => 'user' ], function ($router) { 
             $router->get('list', 'UserController@getList');
+            $router->get('detail/{id}', 'UserController@detail');
+            $router->post('detail/{id}', 'UserController@detail');
+            $router->post('change/status', 'UserController@changeStatus');
         });
     });
     
@@ -42,7 +45,6 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->post('register', 'AuthController@register');
         $router->get('otp/resend/{token}', 'AuthController@otpResend');
         $router->post('otp/verify', 'AuthController@otpVerify');
-
        
     });
 });

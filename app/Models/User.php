@@ -54,8 +54,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'country_id',
         'security_key',
         'verified',
+        'joining_date',
         'term_condition',
-
     ];
 
     /**
@@ -67,5 +67,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
         'role_id',
     ];
+
+    public function userdetail() {
+		return $this->hasOne(UserDetail::class);
+	}
+
+    public function cryptodetail() {
+		return $this->hasOne(CryptoAccountDetail::class);
+	}
+
+    public function bankdetail() {
+		return $this->hasOne(BankAccountDetail::class);
+	}
 
 }

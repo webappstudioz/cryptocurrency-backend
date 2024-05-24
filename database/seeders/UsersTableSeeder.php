@@ -28,6 +28,7 @@ class UsersTableSeeder extends Seeder
             'status'        => 1,
             'phone_number'  =>  '1234567891',
             'verified'      =>  1,
+            'joining_date'  => date('Y-m-d'),
             'created_at'    => date('Y-m-d H:i:s'),
         ]);  
     }
