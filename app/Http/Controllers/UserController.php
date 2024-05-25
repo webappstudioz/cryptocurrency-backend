@@ -34,6 +34,7 @@ class UserController extends Controller
                 $end = $daterang[1];
             }
 
+            $status = ['inactive','active'];
             $data = User::where('role_id',2)->when(!empty($start) && !empty($end) ,function($query) use($start ,$end) {
                         $query->whereBetween('joining_date', [$start, $end]);
                     })->when(!empty($request->search_keyword),function($qu) use($request) {
@@ -44,8 +45,8 @@ class UserController extends Controller
                         ->orWhere('phone_number', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('user_name', 'like', '%'.$$request->search_keyword.'%');
                     })->where('verified',1)
-                    ->when(!empty($request->status),function($qu) use($request){
-                        
+                    ->when(!empty($request->status),function($query) use($request,$status){
+                        $query->where('status',$status[$request->status]);
                     });
 
             $data = $data->orderBy('id','asc')->paginate(10);
