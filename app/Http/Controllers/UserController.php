@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BankAccountDetail;
-use App\Models\CryptoAccountDetail;
-use App\Models\User;
-use App\Models\UserDetail;
+use App\Models\{BankAccountDetail,CryptoAccountDetail,User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Auth,Validator};
 
 class UserController extends Controller
 {
@@ -59,6 +55,7 @@ class UserController extends Controller
                     'last_name'     => $user->last_name,
                     'email'         => $user->email,
                     'phone_number'  => $user->phone_number ? $user->phone_number : '',
+                    'country_code'  => $user->country ? $user->country->phonecode : '',
                     'joining_date'  => $user->joining_date ? $user->joining_date : '', 
                 ]);
             }
@@ -90,11 +87,13 @@ class UserController extends Controller
                 $user = User::find($userId);
                 if($user){
                     $userData = [
+                        'id'                    => $id,
                         'user_name'             => $user->user_name,
                         'first_name'            => $user->first_name,
                         'last_name'             => $user->last_name,
                         'email'                 => $user->email,
                         'phone_number'          => $user->phone_number ? $user->phone_number : '',
+                        'country_code'          => $user->country ? $user->country->phonecode : '',
                         'joining_date'          => $user->joining_date ? $user->joining_date : '',
                         'address'               => $user->userdetail ? ($user->userdetail->address  ? $user->userdetail->address : '') : '',
                         'city'                  => $user->userdetail ? ($user->userdetail->city  ? $user->userdetail->city : '') : '',
@@ -112,7 +111,7 @@ class UserController extends Controller
                     ];
                     
                 }
-                return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCESS.FETCH_DONE'), $userData); 
+                return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.FETCH_DONE'), $userData); 
             }else{
 
                 User::where('id',$userId)->update([
@@ -129,7 +128,7 @@ class UserController extends Controller
                 ]);
 
                 $imageData = '';
-                if($request->filled('crypto_image')){
+                if($request->hasFile('crypto_image')){
                     $image = $request->file('crypto_image');
                     $imageData = file_get_contents($image->getRealPath());
                 }
@@ -141,10 +140,11 @@ class UserController extends Controller
 
 
                 $imageData = '';
-                if($request->filled('account_image')){
+                if($request->hasFile('account_image')){
                     $image = $request->file('account_image');
                     $imageData = file_get_contents($image->getRealPath());
                 }
+               
                 
                 BankAccountDetail::updateOrCreate(['user_id' => $userId],[
                     'bank_name'         =>   $request->bank_name ? $request->bank_name : '',
@@ -154,7 +154,7 @@ class UserController extends Controller
                     'upi_id'             =>  $request->upi_id ? $request->upi_id : '',
                     'account_image'      =>  $imageData
                 ]);
-                return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCESS.UPDATE_DONE')); 
+                return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.UPDATE_DONE')); 
                 
             }
         } catch(\Exception $e) {

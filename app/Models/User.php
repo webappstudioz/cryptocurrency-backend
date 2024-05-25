@@ -80,4 +80,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 		return $this->hasOne(BankAccountDetail::class);
 	}
 
+    public function country() {
+		return $this->belongsTo(Country::class);
+	}
+
 }
