@@ -30,24 +30,45 @@ class UserController extends Controller
             if(request('daterange_filter') && request('daterange_filter') != '') {
                 $daterange = request('daterange_filter');
                 $daterang = explode(' / ',$daterange);
-                $start = $daterang[0].' 00:05:00';
-                $end = $daterang[1].' 23:05:59';
+                $start = $daterang[0];
+                $end = $daterang[1];
             }
 
             $data = User::where('role_id',2)->when(!empty($start) && !empty($end) ,function($query) use($start ,$end) {
-                        $query->whereBetween('created_at', [$start, $end]);
+                        $query->whereBetween('joining_date', [$start, $end]);
                     })->when(!empty($request->search_keyword),function($qu) use($request) {
                         $qu->where('first_name', 'like', '%'.$$request->search_keyword.'%')
-                        ->orWhere('uuid', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('last_name', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", '%'.$$request->search_keyword.'%')
                         ->orWhere('email', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('phone_number', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('user_name', 'like', '%'.$$request->search_keyword.'%');
-                    })->where('verified',1);
+                    })->where('verified',1)
+                    ->when(!empty($request->status),function($qu) use($request){
+                        
+                    });
 
             $data = $data->orderBy('id','asc')->paginate(10);
-            return $this->apiResponse('success', '200', 'User List '. config('constants.SUCESS.FETCH_DONE'), $data); 
+            $userData = [];
+            foreach($data as $user){
+                array_push($userData,[
+                    'id'            => encryptData($user->id),
+                    'user_name'     => $user->user_name,
+                    'first_name'    => $user->first_name,
+                    'last_name'     => $user->last_name,
+                    'email'         => $user->email,
+                    'phone_number'  => $user->phone_number ? $user->phone_number : '',
+                    'joining_date'  => $user->joining_date ? $user->joining_date : '', 
+                ]);
+            }
+            $userList = [
+                'data'          => $userData,
+                'current_page'  => $data->currentPage(),
+                'total_record'  => $data->total(),
+                'has_more_pages'=> $data->hasMorePages(),
+            ];
+            
+            return $this->apiResponse('success', '200', 'User List '. config('constants.SUCESS.FETCH_DONE'), $userList); 
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
         }  
