@@ -57,6 +57,7 @@ class UserController extends Controller
                     'phone_number'  => $user->phone_number ? $user->phone_number : '',
                     'country_code'  => $user->country ? $user->country->phonecode : '',
                     'joining_date'  => $user->joining_date ? $user->joining_date : '', 
+                    'status'        => $user->status,
                 ]);
             }
             $userList = [
