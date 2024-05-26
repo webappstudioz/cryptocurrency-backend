@@ -53,7 +53,7 @@ class AuthController extends Controller
                'last_name'      =>  $user->last_name ? $user->last_name : '',
                'role'           =>  getRoleById($user->id),
                'phone_numnber'  =>  $user->phone_number ? $user->phone_number : '',
-               'country_code'   => $user->country ? $user->country->phonecode : '',
+               'country_code'   => $user->country ? '+'.$user->country->phonecode : '',
                'email'          =>  $user->email,
                'bearer'         =>  Auth::attempt($request->only(['email', 'password'])),
                'joining_date'   =>  $user->joining_date,

@@ -40,7 +40,7 @@ class CommonController extends Controller
                     'name' => $country->name,
                     'country_flag' => $country->country_flag,
                     'short_code'    =>  $country->short_code,
-                    'country_Code'  => $country->phonecode
+                    'country_Code'  => '+'.$country->phonecode
                 ]);
             } 
 

@@ -22,17 +22,9 @@ class UserController extends Controller
                 return $this->apiResponse('error', '401', config('constants.ERROR.NO_AUTHORIZATION'));
             }
 
-            $start = $end = $daterange = '';
-            if(request('daterange_filter') && request('daterange_filter') != '') {
-                $daterange = request('daterange_filter');
-                $daterang = explode(' / ',$daterange);
-                $start = $daterang[0];
-                $end = $daterang[1];
-            }
-
             $status = ['inactive','active'];
-            $data = User::where('role_id',2)->when(!empty($start) && !empty($end) ,function($query) use($start ,$end) {
-                        $query->whereBetween('joining_date', [$start, $end]);
+            $data = User::where('role_id',2)->when(!empty($request->from) && !empty($request->to) ,function($query) use($request) {
+                        $query->whereBetween('joining_date', [$request->from, $request->to]);
                     })->when(!empty($request->search_keyword),function($qu) use($request) {
                         $qu->where('first_name', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('last_name', 'like', '%'.$$request->search_keyword.'%')
@@ -55,7 +47,7 @@ class UserController extends Controller
                     'last_name'     => $user->last_name,
                     'email'         => $user->email,
                     'phone_number'  => $user->phone_number ? $user->phone_number : '',
-                    'country_code'  => $user->country ? $user->country->phonecode : '',
+                    'country_code'  => $user->country ? '+'.$user->country->phonecode : '',
                     'joining_date'  => $user->joining_date ? $user->joining_date : '', 
                     'status'        => $user->status,
                 ]);
@@ -86,6 +78,7 @@ class UserController extends Controller
             if ($request->isMethod('get')) {
                 $userData = [];
                 $user = User::find($userId);
+            
                 if($user){
                     $userData = [
                         'id'                    => $id,
@@ -93,9 +86,11 @@ class UserController extends Controller
                         'first_name'            => $user->first_name,
                         'last_name'             => $user->last_name,
                         'email'                 => $user->email,
+                        'status'                => $user->status,
                         'phone_number'          => $user->phone_number ? $user->phone_number : '',
-                        'country_code'          => $user->country ? $user->country->phonecode : '',
+                        'country_code'          => $user->country ? '+'.$user->country->phonecode : '',
                         'joining_date'          => $user->joining_date ? $user->joining_date : '',
+                        'referral_code'         => '',
                         'address'               => $user->userdetail ? ($user->userdetail->address  ? $user->userdetail->address : '') : '',
                         'city'                  => $user->userdetail ? ($user->userdetail->city  ? $user->userdetail->city : '') : '',
                         'zip_code'              => $user->userdetail ? ($user->userdetail->zip_code  ? $user->userdetail->zip_code : '') : '',
@@ -111,6 +106,8 @@ class UserController extends Controller
                         'account_image'         => $user->bankdetail ? ($user->bankdetail->account_image  ? $user->bankdetail->account_image : '') : '',
                     ];
                     
+                }else{
+                    return $this->apiResponse('error', '422', 'User id is invalid');
                 }
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.FETCH_DONE'), $userData); 
             }else{
