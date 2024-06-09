@@ -187,4 +187,79 @@ class UserController extends Controller
     }
     /* End Method changeStatus */
 
+    /*
+    Method Name:    teamList
+    Developer:      Skillskore
+    Purpose:        To get the list for all the team from its level
+    Params:
+    */
+    public function teamList(Request $request, $level){
+        try{
+            if(getRoleById(authId()) != config('constants.ROLES.ADMINISTRATOR')){
+                $validator = Validator::make($request->all(), ['user_id'=> 'required']);
+                if ($validator->fails()) { 
+                    return $this->apiResponse('error', '422', $validator->errors()->first());
+                } 
+            }
+
+            if(!in_array($level ,[1,2,3])){
+                return $this->apiResponse('error', '422', 'Invalid level');
+            }
+            $userId = $request->filled('user_id') ? decryptData($request->user_id) : authId();
+            
+            $user = new User();
+            if($level == 1){
+                $user  = $user->where('supponser_by',$userId);
+            }elseif($level == 2 ){
+                $userIds = User::where('supponser_by',$userId)->get()->pluck('id');
+                $user = $user->whereIn('supponser_by',$userIds);
+            }elseif($level == 3){
+                $userIds = User::where('supponser_by',$userId)->get()->pluck('id');
+                $userIds = User::whereIn('supponser_by',$userIds)->get()->pluck('id');
+                $user = $user->whereIn('supponser_by',$userIds);
+            }
+
+            $status = ['inactive','active'];
+            $data = $user->where('role_id',2)->when(!empty($request->from) && !empty($request->to) ,function($query) use($request) {
+                        $query->whereBetween('joining_date', [$request->from, $request->to]);
+                    })->when(!empty($request->search_keyword),function($qu) use($request) {
+                        $qu->where('first_name', 'like', '%'.$$request->search_keyword.'%')
+                        ->orWhere('last_name', 'like', '%'.$$request->search_keyword.'%')
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", '%'.$$request->search_keyword.'%')
+                        ->orWhere('email', 'like', '%'.$$request->search_keyword.'%')
+                        ->orWhere('phone_number', 'like', '%'.$$request->search_keyword.'%')
+                        ->orWhere('user_name', 'like', '%'.$$request->search_keyword.'%');
+                    })->where('verified',1)
+                    ->when(!empty($request->status),function($query) use($request,$status){
+                        $query->where('status',$status[$request->status]);
+                    });
+
+            $data = $data->orderBy('id','asc')->paginate(10);
+            $userData = [];
+            foreach($data as $user){
+                array_push($userData,[
+                    'id'            => encryptData($user->id),
+                    'user_name'     => $user->user_name,
+                    'first_name'    => $user->first_name,
+                    'last_name'     => $user->last_name,
+                    'email'         => $user->email,
+                    'phone_number'  => $user->phone_number ? $user->phone_number : '',
+                    'country_code'  => $user->country ? '+'.$user->country->phonecode : '',
+                    'joining_date'  => $user->joining_date ? $user->joining_date : '', 
+                    'status'        => $user->status,
+                ]);
+            }
+            $userList = [
+                'data'          => $userData,
+                'current_page'  => $data->currentPage(),
+                'total_record'  => $data->total(),
+                'has_more_pages'=> $data->hasMorePages(),
+            ];
+            
+            return $this->apiResponse('success', '200', 'Team List '. config('constants.SUCESS.FETCH_DONE'), $userList); 
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
+        }  
+    }
+    /* End Method teamList */
 }
