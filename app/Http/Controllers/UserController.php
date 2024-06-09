@@ -91,7 +91,7 @@ class UserController extends Controller
                         'country_code'          => $user->country ? '+'.$user->country->phonecode : '',
                         'country_id'            => $user->country ? encryptData($user->country->id) : '',
                         'joining_date'          => $user->joining_date ? $user->joining_date : '',
-                        'referral_code'         => '',
+                        'referral_code'         => $user->referral_code,
                         'address'               => $user->userdetail ? ($user->userdetail->address  ? $user->userdetail->address : '') : '',
                         'city'                  => $user->userdetail ? ($user->userdetail->city  ? $user->userdetail->city : '') : '',
                         'zip_code'              => $user->userdetail ? ($user->userdetail->zip_code  ? $user->userdetail->zip_code : '') : '',

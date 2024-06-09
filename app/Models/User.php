@@ -56,6 +56,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'verified',
         'joining_date',
         'term_condition',
+        'supponser_by'
     ];
 
     /**
