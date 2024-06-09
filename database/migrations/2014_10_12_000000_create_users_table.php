@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('supponser_by')->nullable();
-            $table->string('referrel_Code');
+            $table->string('referral_code');
             $table->string('phone_number')->nullable();
             $table->string('country_id')->nullable();
             $table->string('security_key')->nullable();

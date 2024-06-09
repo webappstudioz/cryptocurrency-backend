@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'created_at',
         'updated_at',
         'user_name',
-        'referrel_Code',
+        'referral_code',
         'phone_number',
         'country_id',
         'security_key',

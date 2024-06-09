@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
             'verified'      =>  1,
             'joining_date'  => date('Y-m-d'),
             'created_at'    => date('Y-m-d H:i:s'),
-            'referrel_Code' => strtoupper(Str::random(10))
+            'referral_code' => strtoupper(Str::random(10))
         ]);  
     }
 }
