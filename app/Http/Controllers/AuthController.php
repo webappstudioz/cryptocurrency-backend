@@ -122,7 +122,7 @@ class AuthController extends Controller
                 'term_condition' => $request->term_condition ? $request->term_condition : 0,
                 '$referrel_Code' => $referrel_Code,
                 'role_id'       => 2,
-                'supponser_by'  => $supponser_by,
+                'supponser_by'  => isset($supponser_by) ? $supponser_by :null,
                 'verified'      => 0,
             ]);
 
