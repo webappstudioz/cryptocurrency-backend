@@ -83,6 +83,7 @@ class AuthController extends Controller
             'term_condition'        => 'required|in:0,1',
             'password'              => 'required|min:6|same:confirm_password',
             'confirm_password'      => 'required|min:6',
+            'referrel_Code'         =>  'exists:users,referral_code',
         ];
 		
         $validator = Validator::make($request->all(), $validationRules);
@@ -100,6 +101,15 @@ class AuthController extends Controller
         try {
             User::where('email', $request->email)->where('verified',0)->delete();
 
+            $supponser_by = $referrel_Code = '';
+            do {
+                $referrel_Code = strtoupper(Str::random(10));
+            }while(User::where('referrel_Code',$referrel_Code)->count());
+
+            if($request->filled('referral_code')){
+                $supponser_by = User::where('referral_code',$request->referral_code)->first()->id;
+            }
+
             $user = User::create([
                 'first_name'    => $request->first_name,
                 'last_name'     => $request->last_name ? $request->last_name : Null,
@@ -110,7 +120,9 @@ class AuthController extends Controller
                 'phone_number'  => $request->phone_number,
                 'referrel_Code' => $request->referrel_Code ? $request->referrel_Code : '',
                 'term_condition' => $request->term_condition ? $request->term_condition : 0,
+                '$referrel_Code' => $referrel_Code,
                 'role_id'       => 2,
+                'supponser_by'  => $supponser_by,
                 'verified'      => 0,
             ]);
 

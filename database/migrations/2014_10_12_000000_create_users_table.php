@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('referrel_Code')->nullable();
+            $table->unsignedBigInteger('supponser_by')->nullable();
+            $table->string('referrel_Code');
             $table->string('phone_number')->nullable();
             $table->string('country_id')->nullable();
             $table->string('security_key')->nullable();

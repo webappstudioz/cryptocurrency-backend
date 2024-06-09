@@ -89,6 +89,7 @@ class UserController extends Controller
                         'status'                => $user->status,
                         'phone_number'          => $user->phone_number ? $user->phone_number : '',
                         'country_code'          => $user->country ? '+'.$user->country->phonecode : '',
+                        'country_id'            => $user->country ? encryptData($user->country->id) : '',
                         'joining_date'          => $user->joining_date ? $user->joining_date : '',
                         'referral_code'         => '',
                         'address'               => $user->userdetail ? ($user->userdetail->address  ? $user->userdetail->address : '') : '',

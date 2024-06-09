@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
@@ -30,6 +31,7 @@ class UsersTableSeeder extends Seeder
             'verified'      =>  1,
             'joining_date'  => date('Y-m-d'),
             'created_at'    => date('Y-m-d H:i:s'),
+            'referrel_Code' => strtoupper(Str::random(10))
         ]);  
     }
 }
