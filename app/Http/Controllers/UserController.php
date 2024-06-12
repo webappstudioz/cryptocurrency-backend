@@ -112,7 +112,8 @@ class UserController extends Controller
                 }
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.FETCH_DONE'), $userData); 
             }else{
-
+                // return $request->file('crypto_image');
+                // dd($request->all());
                 User::where('id',$userId)->update([
                     'first_name'        => $request->first_name,
                     'last_name'         => $request->last_name,
@@ -195,12 +196,12 @@ class UserController extends Controller
     */
     public function teamList(Request $request, $level){
         try{
-            if(getRoleById(authId()) != config('constants.ROLES.ADMINISTRATOR')){
-                $validator = Validator::make($request->all(), ['user_id'=> 'required']);
-                if ($validator->fails()) { 
-                    return $this->apiResponse('error', '422', $validator->errors()->first());
-                } 
-            }
+            // if(getRoleById(authId()) == config('constants.ROLES.ADMINISTRATOR')){
+            //     $validator = Validator::make($request->all(), ['user_id'=> 'required']);
+            //     if ($validator->fails()) { 
+            //         return $this->apiResponse('error', '422', $validator->errors()->first());
+            //     } 
+            // }
 
             if(!in_array($level ,[1,2,3])){
                 return $this->apiResponse('error', '422', 'Invalid level');
