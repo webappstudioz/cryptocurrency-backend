@@ -334,7 +334,7 @@ class AuthController extends Controller
     */ 
     public function setNewPassword(Request $request)
     {  
-        $validator = Validator::make([$request->all()], 
+        $validator = Validator::make($request->all(), 
                         [
                             'token' => 'required|exists:password_resets,token',
                             'password'=> 'required_with:password_confirmation|string|confirmed'
