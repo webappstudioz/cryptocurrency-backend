@@ -258,8 +258,9 @@ class AuthController extends Controller
     Params:         [email]
     */ 
     public function resetPassword(Request $request)
-    {  
-        $validator = Validator::make([$request->all()], 
+    { 
+        // return $request->all(); 
+        $validator = Validator::make($request->all(), 
                         ['email'=> 'required|email:rfc,dns|exists:users,email']);
 		if ($validator->fails()) { 
             return $this->apiResponse('error', '422', $validator->errors()->first());
