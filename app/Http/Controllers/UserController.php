@@ -257,7 +257,7 @@ class UserController extends Controller
                 'has_more_pages'=> $data->hasMorePages(),
             ];
             
-            return $this->apiResponse('success', '200', 'Team List '. config('constants.SUCESS.FETCH_DONE'), $userList); 
+            return $this->apiResponse('success', '200', 'Team List '. config('constants.SUCCESS.FETCH_DONE'), $userList); 
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
         }  

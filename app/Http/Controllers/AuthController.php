@@ -45,7 +45,7 @@ class AuthController extends Controller
                 return $this->apiResponse('error', '404', config('constants.ERROR.ACCOUNT_ISSUE'));
             $request->merge(['email' => $user->email]);
             $userData  = [
-               'user_id'        =>  encryptData($user->id),
+               'id'        =>  encryptData($user->id),
                'user_name'      =>  $user->user_name,
                'country_id'     =>  $user->country_id ? encryptData($user->country_id) : '',
                'country_name'   =>  $user->country ? $user->country->name : '',
