@@ -320,7 +320,7 @@ class AuthController extends Controller
                 return $this->apiResponse('error', '422', 'Token expired');
             }
 
-            return $this->apiResponse('success', '200', config('constants.SUCCESS.UPDATE_DONE'));
+            return $this->apiResponse('success', '200', 'Token Verified');
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage());
         } 
@@ -352,7 +352,7 @@ class AuthController extends Controller
             $record = User::where('email', $passwordReset->email)->update($data);
             PasswordReset::where('email', $passwordReset->email)->delete();
                
-            return $this->apiResponse('success', '200', config('constants.SUCCESS.UPDATE_DONE'));
+            return $this->apiResponse('success', '200','Password ' .config('constants.SUCCESS.UPDATE_DONE'));
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage());
         } 
