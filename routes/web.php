@@ -47,5 +47,9 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->get('otp/resend/{token}', 'AuthController@otpResend');
         $router->post('otp/verify', 'AuthController@otpVerify');
        
+        // reset password
+        $router->post('reset/password', 'AuthController@resetPassword');
+        $router->post('set-new/password', 'AuthController@setNewPassword');
+    
     });
 });
