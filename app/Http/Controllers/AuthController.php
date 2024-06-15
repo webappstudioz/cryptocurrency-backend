@@ -57,6 +57,7 @@ class AuthController extends Controller
                'email'          =>  $user->email,
                'bearer'         =>  Auth::attempt($request->only(['email', 'password'])),
                'joining_date'   =>  $user->joining_date,
+               'referral_code'  =>  $user->referral_code
             ];
 
             return $this->apiResponse('success', '200', 'Login successfully', $userData);
@@ -250,4 +251,50 @@ class AuthController extends Controller
         } 
     }    
     /* End Method register */
+
+    //     /*
+    // Method Name:    forgotPassword
+    // Purpose:        Send email tob forgot password
+    // Params:         [email]
+    // */ 
+    // public function forgotPassword(Request $request)
+    // {  
+    //     $validator = Validator::make([$request->all()], 
+    //                     ['email'=> 'required|email:rfc,dns|exists:users,email']);
+	// 	if ($validator->fails()) { 
+    //         return $this->apiResponse('error', '422', $validator->errors()->first());
+    //     } 
+       
+    //     try {
+
+            
+    //         $otp = '';
+    //         do {
+    //             $otp =  random_int(100000, 999999);
+    //         }while(TokenManagement::where('otp',$otp)->count());
+
+    //         TokenManagement::where('token',$token)->update(['otp'=> $otp]);
+            
+    //         $template = $this->getTemplateByName('Email_Address_Verification');
+    //             if( $template ) { 
+    //                 //preparing data to send in mail 
+                
+    //                 $token_detail = TokenManagement::where('token',$token)->first();
+    //                 $user = User::where('email',$token_detail->email)->first();  
+    //                 $link               = config('constants.FRONTEND_URL'). config('constants.OTP_VERIFICATION') .$token;
+    //                 $stringToReplace    = ['{{$name}}', '{{$token}}','{{$otp}}' ];
+    //                 $stringReplaceWith  = [$user->first_name.' '.$user->last_name, $link ,$otp ];
+    //                 $newval             = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+    //                 //mail logs
+    //                 $emailData          = $this->mailData($user->email, $template->subject, $newval, 'Email_Address_Verification', $template->id, '', '', authId());
+
+    //                 $this->mailSend($emailData);
+    //             }
+    //         return $this->apiResponse('success', '200', 'OTP is generated now check again email');
+    //     } catch(\Exception $e) {
+    //         return $this->apiResponse('error', '400', $e->getMessage());
+    //     } 
+    // }    
+    // /* End Method otpResend */
+    
 }
