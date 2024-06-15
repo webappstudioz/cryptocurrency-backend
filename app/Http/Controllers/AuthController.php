@@ -281,7 +281,7 @@ class AuthController extends Controller
                     }while(PasswordReset::where('token',$token)->count());
 
                     $passwordReset = PasswordReset::updateOrCreate( ['email' => $user->email],
-                        [ 'email' => $user->email, 'token' => $token ] );
+                        [ 'email' => $user->email, 'token' => $token ,'created_at' => date('Y-m-d H:i:s')] );
                     //preparing data to send in mail 
                     $link               = config('constants.FRONTEND_URL'). config('constants.VERIFICATION') .$token;
                     $stringToReplace    = ['{{$name}}', '{{$token}}' ];
@@ -298,6 +298,34 @@ class AuthController extends Controller
         } 
     }    
     /* End Method resetPassword */
+
+
+    /*
+    Method Name:    resetPasswordVerify
+    Purpose:        check the reset password token verification
+    Params:         [token]
+    */ 
+    public function resetPasswordVerify($token)
+    {  
+        try {
+            if (PasswordReset::where('token',$token)->count() == 0) { 
+                return $this->apiResponse('error', '422', 'Please provide a valid token');
+            } 
+            $token_detail = PasswordReset::where('token',$token)->first();
+    
+            $createdAt = Carbon::parse($token_detail->updated_at);
+            $now = Carbon::now();
+    
+            if ($createdAt->diffInMinutes($now) > 60) {
+                return $this->apiResponse('error', '422', 'Token expired');
+            }
+
+            return $this->apiResponse('success', '200', config('constants.SUCCESS.UPDATE_DONE'));
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        } 
+    }    
+    /* End Method setNewPassword */
 
     /*
     Method Name:    setNewPassword

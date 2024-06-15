@@ -49,6 +49,7 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
        
         // reset password
         $router->post('reset/password', 'AuthController@resetPassword');
+        $router->get('reset-password/{token}/verify', 'AuthController@resetPasswordVerify');
         $router->post('set-new/password', 'AuthController@setNewPassword');
     
     });
