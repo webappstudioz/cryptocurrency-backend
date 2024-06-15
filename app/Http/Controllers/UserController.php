@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{BankAccountDetail,CryptoAccountDetail,User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth,Validator};
+use Illuminate\Support\Facades\{Auth, Hash, Validator};
 
 class UserController extends Controller
 {
@@ -113,8 +113,8 @@ class UserController extends Controller
                 }
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.FETCH_DONE'), $userData); 
             }else{
-                // return $request->file('crypto_image');
-                // dd($request->all());
+                // return $request->hasFile('crypto_image');
+                // return ($request->all());
                 User::where('id',$userId)->update([
                     'first_name'        => $request->first_name,
                     'last_name'         => $request->last_name,
@@ -264,4 +264,41 @@ class UserController extends Controller
         }  
     }
     /* End Method teamList */
+
+
+    /*
+    Method Name:    ChangePassword
+    Developer:      Skillskore
+    Purpose:        To update user password
+    Params:         [oldpassword, newpassword,confirm password]
+    */
+    public function changePassword(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all() , [
+                'oldpassword' => 'required',  
+                'password'=> 'required_with:password_confirmation|string|confirmed']);
+            if ($validator->fails()) { 
+                return $this->apiResponse('error', '422', $validator->errors()->first());
+            } 
+
+            $hashedPassword = Auth::user()->password;
+
+            if (Hash::check($request->oldpassword, $hashedPassword)){
+                if (!Hash::check($request->password, $hashedPassword)){
+                    $users = User::find(authId());
+                    $users->password = Hash::make($request->password);
+                    $users->save();
+                    return $this->apiResponse('success', '200', 'Password '. config('constants.SUCCESS.UPDATED_DONE')); 
+                } else {
+                    return $this->apiResponse('error', '400', "New password can not be the old password!");
+                }
+            }else{
+                return $this->apiResponse('error', '400', 'Old password doesnt matched');
+            }
+        }catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage());
+        } 
+    }
+    /* End Method changePassword */
 }

@@ -39,6 +39,7 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
             $router->get('detail/{id}', 'UserController@detail');
             $router->post('detail/{id}', 'UserController@detail');
             $router->post('change/status', 'UserController@changeStatus');
+            $router->get('change-password', 'UserController@changePassword');
         });
     });
     
