@@ -41,6 +41,8 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
             $router->post('change/status', 'UserController@changeStatus');
             $router->get('change-password', 'UserController@changePassword');
         });
+        
+        $router->get('admin/account/detail','DepositController@admiAccountDetail');
     });
     
     $router->group([ 'prefix' => 'user' ], function ($router) { 
