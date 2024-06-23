@@ -43,6 +43,13 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         });
         
         $router->get('admin/account/detail','DepositController@admiAccountDetail');
+
+        $router->group(['prefix' => 'deposit'],function ($router) {
+            $router->post('/','DepositController@deposit');
+            $router->post('list','DepositController@list');
+            $router->post('change/status', 'DepositController@changeStatus');
+            $router->detail('detail/{id}','DepositController@detail');
+        });
     });
     
     $router->group([ 'prefix' => 'user' ], function ($router) { 

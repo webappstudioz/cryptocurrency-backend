@@ -111,4 +111,21 @@ if (!function_exists('public_path')) {
 }
 
 
+/*
+    Method Name:    userNameById
+    Purpose:        get user name by id
+    Params:         [userid]
+*/  
+if (!function_exists('userNameById')) {
+    function userNameById($userId) {
+        $user = User::find($userId); 
+        if(  $user ){
+            $name = ($user->first_name ?? '').' '.($user->last_name ?? '');
+            return $name;
+        }
+        return null;
+    }
+}
+/* End Method userNameById */
+
 ?>
