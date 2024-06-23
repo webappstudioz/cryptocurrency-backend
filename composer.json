@@ -8,6 +8,9 @@
         "php": "^8.0",
         "flipbox/lumen-generator": "^9.2",
         "laravel/lumen-framework": "^9.0",
+        "league/flysystem": "^3.28",
+        "league/flysystem-aws-s3-v3": "^3.28",
+        "league/flysystem-local": "^3.28",
         "swiftmailer/swiftmailer": "^6.3",
         "tymon/jwt-auth": "*"
     },

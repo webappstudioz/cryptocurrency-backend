@@ -113,8 +113,18 @@ class UserController extends Controller
                 }
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.FETCH_DONE'), $userData); 
             }else{
-                // return $request->hasFile('crypto_image');
-                // return ($request->all());
+                $validationRules = [
+                    'first_name'            => 'required|string|max:255', 
+                    'last_name'             => 'required|string|max:255', 
+                    'crypto_image'          => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'account_image'          => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ];
+                
+                $validator = Validator::make($request->all(), $validationRules);
+                if ($validator->fails()) { 
+                    return $this->apiResponse('error', '422', $validator->errors()->first());
+                } 
+
                 User::where('id',$userId)->update([
                     'first_name'        => $request->first_name,
                     'last_name'         => $request->last_name,
@@ -128,32 +138,35 @@ class UserController extends Controller
                     'zip_code'  => $request->zip_code ? $request->zip_code : '',
                 ]);
 
-                $imageData = '';
-                if($request->hasFile('crypto_image')){
-                    $image = $request->file('crypto_image');
-                    $imageData = file_get_contents($image->getRealPath());
+                $filename = '';
+                if ($request->hasFile('crypto_image')) {
+                    $file = $request->file('crypto_image');
+                    $fileExtension = $file->getClientOriginalExtension(); 
+                    $filename = date('YmdHis') . '.' . $fileExtension; 
+                    $path = $file->move(public_path('images'), $filename);
                 }
+
 
                 CryptoAccountDetail::updateOrCreate(['user_id' => $userId],[
                     'crypto_id'   => $request->crypto_id ? $request->crypto_id : '',
-                    'crypto_image' => $imageData,
+                    'crypto_image' => $filename,
                 ]);
 
-
-                $imageData = '';
-                if($request->hasFile('account_image')){
-                    $image = $request->file('account_image');
-                    $imageData = file_get_contents($image->getRealPath());
+                $filename = '';
+                if ($request->hasFile('account_image')) {
+                    $file = $request->file('account_image');
+                    $fileExtension = $file->getClientOriginalExtension(); 
+                    $filename = date('YmdHis') . '.' . $fileExtension; 
+                    $path = $file->move(public_path('images'), $filename);
                 }
-               
-                
+
                 BankAccountDetail::updateOrCreate(['user_id' => $userId],[
                     'bank_name'         =>   $request->bank_name ? $request->bank_name : '',
                     'account_number'    =>   $request->account_number ? $request->account_number : '',
                     'ifsc_code'         =>   $request->ifsc_code ? $request->ifsc_code : '',
                     'account_holder_name'=>  $request->account_holder_name ? $request->account_holder_name : '',
                     'upi_id'             =>  $request->upi_id ? $request->upi_id : '',
-                    'account_image'      =>  $imageData
+                    'account_image'      =>  $filename
                 ]);
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.UPDATE_DONE')); 
                 

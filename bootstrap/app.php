@@ -30,7 +30,7 @@ $app->withEloquent();
 $app->configure('auth');
 $app->configure('constants');
 $app->configure('database');
-
+$app->configure('filesystem');
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
