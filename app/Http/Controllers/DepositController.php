@@ -15,7 +15,7 @@ class DepositController extends Controller
     Purpose:        To get the admin account detail
     Params:
     */
-    public function detail(Request $request){
+    public function admiAccountDetail(Request $request){
         try{
 
             $userData = [];
