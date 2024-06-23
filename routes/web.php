@@ -42,13 +42,13 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
             $router->post('change-password', 'UserController@changePassword');
         });
         
-        $router->get('admin/account/detail','DepositController@admiAccountDetail');
+        $router->get('admin/account/detail','PaymentController@admiAccountDetail');
 
-        $router->group(['prefix' => 'deposit'],function ($router) {
-            $router->post('/','DepositController@deposit');
-            $router->post('list','DepositController@list');
-            $router->post('change/status', 'DepositController@changeStatus');
-            $router->detail('detail/{id}','DepositController@detail');
+        $router->group(['prefix' => 'payment'],function ($router) {
+            $router->post('/','PaymentController@payment');
+            $router->post('list','PaymentController@list');
+            $router->post('change/status', 'PaymentController@changeStatus');
+            $router->get('detail/{id}','PaymentController@detail');
         });
     });
     
