@@ -125,6 +125,7 @@ class UserController extends Controller
                     return $this->apiResponse('error', '422', $validator->errors()->first());
                 } 
 
+                $user = User::find($userId);
                 User::where('id',$userId)->update([
                     'first_name'        => $request->first_name,
                     'last_name'         => $request->last_name,
@@ -140,6 +141,13 @@ class UserController extends Controller
 
                 $filename = '';
                 if ($request->hasFile('crypto_image')) {
+                    $currentImage = $user->cryptodetail ? $user->cryptodetail->crypto_image : '';
+
+                    // Delete the current image if it exists
+                    if ($currentImage && file_exists(public_path('images/'.$currentImage))) {
+                        unlink(public_path('images/'.$currentImage));
+                    }
+
                     $file = $request->file('crypto_image');
                     $fileExtension = $file->getClientOriginalExtension(); 
                     $filename = date('YmdHis') . '.' . $fileExtension; 
@@ -154,6 +162,14 @@ class UserController extends Controller
 
                 $filename = '';
                 if ($request->hasFile('account_image')) {
+
+                    $currentImage = $user->bankdetail ? $user->bankdetail->account_image : '';
+
+                    // Delete the current image if it exists
+                    if ($currentImage && file_exists(public_path('images/'.$currentImage))) {
+                        unlink(public_path('images/'.$currentImage));
+                    }
+
                     $file = $request->file('account_image');
                     $fileExtension = $file->getClientOriginalExtension(); 
                     $filename = date('YmdHis') . '.' . $fileExtension; 
