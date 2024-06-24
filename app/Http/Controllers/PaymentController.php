@@ -158,7 +158,7 @@ class PaymentController extends Controller
                 'image_path'    => $filename
             ]);
 
-            return $this->apiResponse('success', '200', 'Deposit '. config('constants.SUCCESS.ADD_DONE')); 
+            return $this->apiResponse('success', '200', ucfirst($request->payment_type).' '.config('constants.SUCCESS.ADD_DONE')); 
         
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
