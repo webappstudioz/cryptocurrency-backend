@@ -155,6 +155,7 @@ class PaymentController extends Controller
                 'method_type'   => $request->method_type ? $request->method_type : null,
                 'payment_type'  => $request->payment_type,
                 'amount'        => $request->amount,
+                'image_path'    => $filename
             ]);
 
             return $this->apiResponse('success', '200', 'Deposit '. config('constants.SUCCESS.ADD_DONE')); 

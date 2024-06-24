@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('send_to');
             $table->unsignedBigInteger('send_from');
-            $table->string('payment_id');
+            $table->string('payment_id')->nullable();
             $table->string('method_type')->nullable();
-            $table->string('image_path');
+            $table->string('image_path')->nullable();
             $table->integer('amount');
             $table->enum('payment_type',['deposit','withdraw','transfer']);
             $table->enum('status',['pending','accepted','rejected'])->default('pending');
