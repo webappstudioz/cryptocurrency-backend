@@ -150,7 +150,7 @@ class UserController extends Controller
                     }
 
                     $file = $request->file('crypto_image');
-                    $fileExtension = $file->getClientOriginalExtension(); 
+                    $fileExtension = $file->getClientOriginalName(); 
                     $filename = date('YmdHis') . '.' . $fileExtension; 
                     $path = $file->move(public_path('images'), $filename);
                 }
@@ -172,7 +172,7 @@ class UserController extends Controller
                     }
 
                     $file = $request->file('account_image');
-                    $fileExtension = $file->getClientOriginalExtension(); 
+                    $fileExtension = $file->getClientOriginalName(); 
                     $accountImagePath = date('YmdHis') . '.' . $fileExtension; 
                     $path = $file->move(public_path('images'), $accountImagePath);
                 }
