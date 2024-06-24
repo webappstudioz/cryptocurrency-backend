@@ -122,7 +122,7 @@ class PaymentController extends Controller
     public function payment(Request $request){
         try{
             $validationRules = [
-                'payment_id'     => 'required|string',
+                'payment_id'     => 'required_if:payment_type,deposit|required|string',
                 'payment_type'   => 'required|in:deposit,withdraw,transfer',
                 'method_type'    => 'required_if:payment_type,transfer|in:bank,tether,bitcoin,ethereum',
                 'amount'         => 'required',
