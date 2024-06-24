@@ -126,8 +126,8 @@ class PaymentController extends Controller
                 'payment_type'   => 'required|in:deposit,withdraw,transfer',
                 'method_type'    => 'required_if:payment_type,transfer|in:bank,tether,bitcoin,ethereum',
                 'amount'         => 'required',
-                'image'          => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                 'send_to'        => 'required_if:payment_type,transfer|exists:users,user_name'
+                'image'          => 'required_if:payment_type,deposit|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'send_to'        => 'required_if:payment_type,transfer|exists:users,user_name'
             ];
             
             $validator = Validator::make($request->all(), $validationRules);
