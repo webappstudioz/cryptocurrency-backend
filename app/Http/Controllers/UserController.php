@@ -89,6 +89,7 @@ class UserController extends Controller
                         'status'                => $user->status,
                         'phone_number'          => $user->phone_number ? $user->phone_number : '',
                         'country_code'          => $user->country ? '+'.$user->country->phonecode : '',
+                        'country_name'          => $user->country ? $user->country->name : '',
                         'country_id'            => $user->country ? encryptData($user->country->id) : '',
                         'joining_date'          => $user->joining_date ? $user->joining_date : '',
                         'referral_code'         => $user->referral_code,
@@ -160,7 +161,7 @@ class UserController extends Controller
                     'crypto_image' => $filename,
                 ]);
 
-                $filename = '';
+                $accountImagePath = '';
                 if ($request->hasFile('account_image')) {
 
                     $currentImage = $user->bankdetail ? $user->bankdetail->account_image : '';
@@ -172,8 +173,8 @@ class UserController extends Controller
 
                     $file = $request->file('account_image');
                     $fileExtension = $file->getClientOriginalExtension(); 
-                    $filename = date('YmdHis') . '.' . $fileExtension; 
-                    $path = $file->move(public_path('images'), $filename);
+                    $accountImagePath = date('YmdHis') . '.' . $fileExtension; 
+                    $path = $file->move(public_path('images'), $accountImagePath);
                 }
 
                 BankAccountDetail::updateOrCreate(['user_id' => $userId],[
@@ -182,7 +183,7 @@ class UserController extends Controller
                     'ifsc_code'         =>   $request->ifsc_code ? $request->ifsc_code : '',
                     'account_holder_name'=>  $request->account_holder_name ? $request->account_holder_name : '',
                     'upi_id'             =>  $request->upi_id ? $request->upi_id : '',
-                    'account_image'      =>  $filename
+                    'account_image'      =>  $accountImagePath
                 ]);
                 return $this->apiResponse('success', '200', 'User detail '. config('constants.SUCCESS.UPDATE_DONE')); 
                 
