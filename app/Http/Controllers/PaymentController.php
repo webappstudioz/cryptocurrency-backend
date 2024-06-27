@@ -92,10 +92,12 @@ class PaymentController extends Controller
             foreach($depositlist as $deposit){
                 array_push($depositData,[
                     'id'            => encryptData($deposit->id),
-                    'user_name'     => userNameById($deposit->send_from),
+                    'send_from'     => userNameById($deposit->send_from),
+                    'send_to'       => userNameById($deposit->send_to),
+                    'amount'        => $deposit->amount,
+                    'payment_type'  => $deposit->payment_type,
                     'created_at'    => $deposit->created_at ? $deposit->created_at : '', 
                     'status'        => $deposit->status,
-                    'payment_id'    => $deposit->payment_id
                 ]);
             }
             $data = [
