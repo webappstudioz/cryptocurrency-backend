@@ -53,7 +53,7 @@ class PaymentController extends Controller
         try{
             $validationRules = [
                 'deposit_id'            => 'required', 
-                'status'             => 'required|in:accepted,rejected', 
+                'status'                => 'required|in:paid,cancelled', 
             ];
             
             $validator = Validator::make($request->all(), $validationRules);

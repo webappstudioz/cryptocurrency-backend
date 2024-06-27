@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('image_path')->nullable();
             $table->integer('amount');
             $table->enum('payment_type',['deposit','withdraw','transfer']);
-            $table->enum('status',['pending','accepted','rejected'])->default('pending');
+            $table->enum('status',['pending','paid','cancelled'])->default('pending');
             $table->timestamps();
         });
     }
