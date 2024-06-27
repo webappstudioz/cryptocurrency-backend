@@ -83,7 +83,7 @@ class PaymentController extends Controller
             $depositlist = new Payment();
 
             if(getRoleById(authId()) != config('constants.ROLES.ADMIN')){
-                $depositlist = $depositlist->where('user_id',authId());
+                $depositlist = $depositlist->where('send_from',authId());
             }
         
             $depositlist = $depositlist->orderBy('id','asc')->paginate(10);;
