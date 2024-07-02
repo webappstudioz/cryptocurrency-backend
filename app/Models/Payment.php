@@ -16,4 +16,12 @@ class Payment extends Model
         'amount',
         'status',
     ];
+    
+    public function sendTo() {
+		return $this->belongsTo(User::class,'send_to','id');
+	}
+
+    public function sendFrom() {
+		return $this->belongsTo(User::class,'send_from','id');
+	}
 }

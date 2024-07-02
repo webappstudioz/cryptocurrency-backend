@@ -83,10 +83,33 @@ class PaymentController extends Controller
             $depositlist = new Payment();
 
             if(getRoleById(authId()) != config('constants.ROLES.ADMIN')){
-                $depositlist = $depositlist->where('send_from',authId());
+                $depositlist = $depositlist->where('send_from', authId());
             }
-        
-            $depositlist = $depositlist->orderBy('id','asc')->paginate(10);;
+
+            $depositlist = $depositlist->when($request->filled('search_keyword'), function($query) use($request) {
+                                $keyword = '%' . $request->search_keyword . '%';
+                                $query->where(function($query) use($keyword) {
+                                    $query->where('amount', 'like', $keyword)
+                                        ->orWhereHas('sendTo', function($query) use($keyword) {
+                                            $query->where('first_name', 'like', $keyword)
+                                                ->orWhere('last_name', 'like', $keyword)
+                                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$keyword]);
+                                        })->orWhereHas('sendFrom', function($query) use($keyword) {
+                                            $query->where('first_name', 'like', $keyword)
+                                                ->orWhere('last_name', 'like', $keyword)
+                                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$keyword]);
+                                        });
+                                });
+                            })->when($request->filled('payment_type'), function($query) use($request) {
+                                $query->where('payment_type', $request->payment_type);
+                            })->when($request->filled('method_type'), function($query) use($request) {
+                                $query->where('method_type', $request->method_type);
+                            })->when($request->filled('status'), function($query) use($request){
+                                $query->whereIn('status',explode(',', $statusString));
+                            });
+            
+            $depositlist = $depositlist->orderBy('id', 'asc')->paginate(10);
+            
 
             $depositData = [];
             foreach($depositlist as $deposit){
@@ -103,6 +126,7 @@ class PaymentController extends Controller
             $data = [
                 'data'          => $depositData,
                 'current_page'  => $depositlist->currentPage(),
+                'last_page'    => $depositlist->lastPage(),
                 'total_record'  => $depositlist->total(),
                 'has_more_pages'=> $depositlist->hasMorePages(),
             ];
