@@ -112,8 +112,13 @@ class PaymentController extends Controller
             
 
             $depositData = [];
-            foreach($depositlist as $deposit){
+            $sr_no = 1;
+            if($depositlist->currentPage() > 1){
+                $sr_no = $depositlist->currentPage()*10 - 9;
+            }
+            foreach($depositlist as $key => $deposit){
                 array_push($depositData,[
+                    'sr_no'         => $sr_no++,
                     'id'            => encryptData($deposit->id),
                     'send_from'     => userNameById($deposit->send_from),
                     'send_to'       => userNameById($deposit->send_to),
