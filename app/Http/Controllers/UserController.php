@@ -55,6 +55,7 @@ class UserController extends Controller
             $userList = [
                 'data'          => $userData,
                 'current_page'  => $data->currentPage(),
+                'last_page'     => $data->lastPage(),
                 'total_record'  => $data->total(),
                 'has_more_pages'=> $data->hasMorePages(),
             ];
@@ -284,6 +285,7 @@ class UserController extends Controller
             $userList = [
                 'data'          => $userData,
                 'current_page'  => $data->currentPage(),
+                'last_page'     => $data->lastPage(),
                 'total_record'  => $data->total(),
                 'has_more_pages'=> $data->hasMorePages(),
             ];
