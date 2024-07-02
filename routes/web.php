@@ -33,7 +33,7 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->post('store/results', 'TimeZoneController@storeTimeZone');
         $router->post('update/profile','AuthController@detailUpdate');
         $router->get('get/profile','AuthController@profile');
-        $router->get('team/list/{level}', 'UserController@teamList');
+        $router->post('team/list/{level}', 'UserController@teamList');
         $router->group([ 'prefix' => 'user' ], function ($router) { 
             $router->get('list', 'UserController@getList');
             $router->get('detail/{id}', 'UserController@detail');
