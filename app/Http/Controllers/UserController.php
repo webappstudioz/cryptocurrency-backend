@@ -39,8 +39,13 @@ class UserController extends Controller
 
             $data = $data->orderBy('id','asc')->paginate(10);
             $userData = [];
+            $sr_no = 1;
+            if($data->currentPage() > 1){
+                $sr_no = $data->currentPage()*10 - 9;
+            }
             foreach($data as $user){
                 array_push($userData,[
+                    'sr_no'         => $sr_no++,
                     'id'            => encryptData($user->id),
                     'user_name'     => $user->user_name,
                     'first_name'    => $user->first_name,
@@ -269,8 +274,13 @@ class UserController extends Controller
 
             $data = $data->orderBy('id','asc')->paginate(10);
             $userData = [];
+            $sr_no = 1;
+            if($data->currentPage() > 1){
+                $sr_no = $data->currentPage()*10 - 9;
+            }
             foreach($data as $user){
                 array_push($userData,[
+                    'sr_no'         => $sr_no++,
                     'id'            => encryptData($user->id),
                     'user_name'     => $user->user_name,
                     'first_name'    => $user->first_name,
