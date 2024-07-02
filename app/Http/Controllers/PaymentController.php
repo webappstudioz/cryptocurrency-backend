@@ -100,7 +100,7 @@ class PaymentController extends Controller
                                                 ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$keyword]);
                                         });
                                 });
-                            })->when($request->filled('payment_type'), function($query) use($request) {
+                            })->when(($request->filled('payment_type') && $request->payment_type != 'all'), function($query) use($request) {
                                 $query->where('payment_type', $request->payment_type);
                             })->when($request->filled('method_type'), function($query) use($request) {
                                 $query->where('method_type', $request->method_type);
