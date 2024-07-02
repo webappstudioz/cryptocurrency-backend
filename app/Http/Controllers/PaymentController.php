@@ -105,7 +105,7 @@ class PaymentController extends Controller
                             })->when($request->filled('method_type'), function($query) use($request) {
                                 $query->where('method_type', $request->method_type);
                             })->when($request->filled('status'), function($query) use($request){
-                                $query->whereIn('status',explode(',', $statusString));
+                                $query->whereIn('status',explode(',', $request->status));
                             });
             
             $depositlist = $depositlist->orderBy('id', 'asc')->paginate(10);
