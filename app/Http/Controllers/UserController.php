@@ -261,12 +261,12 @@ class UserController extends Controller
             $data = $user->where('role_id',2)->when(!empty($request->from) && !empty($request->to) ,function($query) use($request) {
                         $query->whereBetween('joining_date', [$request->from, $request->to]);
                     })->when(!empty($request->search_keyword),function($qu) use($request) {
-                        $qu->where('first_name', 'like', '%'.$$request->search_keyword.'%')
-                        ->orWhere('last_name', 'like', '%'.$$request->search_keyword.'%')
-                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", '%'.$$request->search_keyword.'%')
-                        ->orWhere('email', 'like', '%'.$$request->search_keyword.'%')
-                        ->orWhere('phone_number', 'like', '%'.$$request->search_keyword.'%')
-                        ->orWhere('user_name', 'like', '%'.$$request->search_keyword.'%');
+                        $qu->where('first_name', 'like', '%'.$request->search_keyword.'%')
+                        ->orWhere('last_name', 'like', '%'.$request->search_keyword.'%')
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", '%'.$request->search_keyword.'%')
+                        ->orWhere('email', 'like', '%'.$request->search_keyword.'%')
+                        ->orWhere('phone_number', 'like', '%'.$request->search_keyword.'%')
+                        ->orWhere('user_name', 'like', '%'.$request->search_keyword.'%');
                     })->where('verified',1)
                     ->when((!empty($request->status) && $request->status != 'all'),function($query) use($request,$status){
                         $query->where('status',$status[$request->status]);
