@@ -268,7 +268,7 @@ class UserController extends Controller
                         ->orWhere('phone_number', 'like', '%'.$$request->search_keyword.'%')
                         ->orWhere('user_name', 'like', '%'.$$request->search_keyword.'%');
                     })->where('verified',1)
-                    ->when(!empty($request->status),function($query) use($request,$status){
+                    ->when((!empty($request->status) && $request->status != 'all'),function($query) use($request,$status){
                         $query->where('status',$status[$request->status]);
                     });
 
