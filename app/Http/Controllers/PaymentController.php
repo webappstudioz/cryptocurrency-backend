@@ -82,7 +82,7 @@ class PaymentController extends Controller
             $data = [];
             $depositlist = new Payment();
 
-            if(getRoleById(authId()) != config('constants.ROLES.ADMIN')){
+            if(getRoleById(authId()) != config('constants.ROLES.ADMINISTRATOR')){
                 $depositlist = $depositlist->where('send_from', authId());
             }
 
