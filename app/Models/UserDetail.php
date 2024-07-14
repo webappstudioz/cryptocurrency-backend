@@ -11,6 +11,7 @@ class UserDetail extends Model
         'address',
         'city',
         'zip_code',
+        'wallet_amount',
         'status',
         'created_at',
         'updated_at'

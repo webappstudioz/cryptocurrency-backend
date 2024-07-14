@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InvoiceRejectionReason;
 use App\Models\Payment;
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -53,8 +54,9 @@ class PaymentController extends Controller
     public function changeStatus(Request $request){
         try{
             $validationRules = [
-                'deposit_id'            => 'required', 
+                'invoice_id'            => 'required', 
                 'status'                => 'required|in:paid,cancelled', 
+                'reason'                => 'required_if:status,cancelled',
             ];
             
             $validator = Validator::make($request->all(), $validationRules);
@@ -62,8 +64,22 @@ class PaymentController extends Controller
                 return $this->apiResponse('error', '422', $validator->errors()->first());
             } 
 
-            Payment::where('id',decryptData($request->deposit_id))->update(['status'  => $request->status]);
-
+            $payment = Payment::where('id',decryptData($request->invoice_id))->first();
+            if($request->status == 'paid'){
+               $user_detail =  UserDetail::where('user_id',$payment->send_to)->first();
+                if($user_detail->wallet_amount == 'null'){
+                    $user_detail->wallet_amount =  $payment->amount;
+                }else{
+                    $user_detail->wallet_amount +=  $payment->amount; 
+                }
+                $user_detail->save();
+            }else if($request->status == 'cancelled'){
+                $payment->reject_id = $request->reason;
+                $payment->description = $request->description ? $request->description : null;
+            }
+            $payment->status    = $request->status;
+            $payment->save();
+            
             return $this->apiResponse('success', '200', 'Deposit Status '. config('constants.SUCESS.CHANGED_DONE')); 
         } catch(\Exception $e) {
             return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
@@ -80,7 +96,7 @@ class PaymentController extends Controller
     */
     public function rejectionReason(Request $request){
         try{
-           $data =  InvoiceRejectionReason::get();
+           $data =  InvoiceRejectionReason::select('id','reason')->get();
             
             return $this->apiResponse('success', '200', 'Deposit Status '. config('constants.SUCESS.CHANGED_DONE'),$data); 
         } catch(\Exception $e) {
