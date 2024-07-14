@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InvoiceRejectionReason;
 use App\Models\Payment;
 use App\Models\User;
 use App\Traits\SendResponseTrait;
@@ -43,7 +44,7 @@ class PaymentController extends Controller
     }
     /* End Method detail */
 
-        /*
+    /*
         Method Name:    changeStatus
         Developer:      Skillskore
         Purpose:        To update the  status of user
@@ -69,6 +70,24 @@ class PaymentController extends Controller
         }  
     }
     /* End Method changeStatus */
+
+    
+    /*
+        Method Name:    rejectionReason
+        Developer:      Skillskore
+        Purpose:        To get the rejection reason
+        Params:
+    */
+    public function rejectionReason(Request $request){
+        try{
+           $data =  InvoiceRejectionReason::get();
+            
+            return $this->apiResponse('success', '200', 'Deposit Status '. config('constants.SUCESS.CHANGED_DONE'),$data); 
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '400', $e->getMessage(), $e->getLine(),$e);
+        }  
+    }
+    /* End Method rejectionReason */
 
     /*
         Method Name:    list

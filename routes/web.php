@@ -41,8 +41,10 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
             $router->post('change/status', 'UserController@changeStatus');
             $router->post('change-password', 'UserController@changePassword');
         });
-        
-        $router->get('admin/account/detail','PaymentController@admiAccountDetail');
+        $router->group([ 'prefix' => 'admin' ], function ($router) { 
+            $router->get('account/detail','PaymentController@admiAccountDetail');
+            $router->get('invoice/rejection/reason','PaymentController@rejectionReason');
+        });
 
         $router->group(['prefix' => 'payment'],function ($router) {
             $router->post('/','PaymentController@payment');
