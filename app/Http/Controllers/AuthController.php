@@ -117,7 +117,6 @@ class AuthController extends Controller
                 'phone_number'  => $request->phone_number ? $request->phone_number : null,
                 'country_id'    => $request->country_id ? decryptData($request->country_id) : null,
                 'password'      => Hash::make($request->password),
-                'phone_number'  => $request->phone_number,
                 'term_condition' => $request->term_condition ? $request->term_condition : 0,
                 'referral_code' => $referral_code,
                 'role_id'       => 2,
@@ -125,6 +124,8 @@ class AuthController extends Controller
                 'verified'      => 0,
             ]);
 
+            UserDetail::create(['user_id' => $user->id]);
+            
             $token = '';
             do {
                 $token = Str::random(10);

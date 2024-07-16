@@ -67,6 +67,11 @@ class PaymentController extends Controller
             $payment = Payment::where('id',decryptData($request->invoice_id))->first();
             if($request->status == 'paid'){
                $user_detail =  UserDetail::where('user_id',$payment->send_to)->first();
+               /*removeable code */
+               if(is_null($user_detail) ){
+                User::craete(['user_id',$payment->send_to]);
+               }
+               /** end */
                 if($user_detail->wallet_amount == 'null'){
                     $user_detail->wallet_amount =  $payment->amount;
                 }else{
