@@ -65,4 +65,8 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
         $router->post('set-new/password', 'AuthController@setNewPassword');
     
     });
+
+    $router->group([ 'prefix' => 'number' ], function ($router) { 
+        $router->post('store', 'NumberWinningController@store');
+    });
 });

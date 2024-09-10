@@ -226,10 +226,10 @@ class UserController extends Controller
     /* End Method changeStatus */
 
     /*
-    Method Name:    teamList
-    Developer:      Skillskore
-    Purpose:        To get the list for all the team from its level
-    Params:
+        Method Name:    teamList
+        Developer:      Skillskore
+        Purpose:        To get the list for all the team from its level
+        Params:
     */
     public function teamList(Request $request, $level){
         try{
