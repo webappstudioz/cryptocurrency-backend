@@ -66,7 +66,7 @@ $router->group([ 'prefix'=>'v1' ], function () use ($router) {
     
     });
 
-    $router->group([ 'prefix' => 'number' ], function ($router) { 
-        $router->post('store', 'NumberWinningController@store');
+    $router->group([ 'prefix' => 'bet' ], function ($router) { 
+        $router->post('place', 'NumberWinningController@place');
     });
 });

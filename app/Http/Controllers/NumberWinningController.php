@@ -17,11 +17,12 @@ class NumberWinningController extends Controller
      Purpose:        To store the number
      Params:
      */
-     public function store(Request $request){
+     public function place(Request $request){
          try{
             
             $validationRules = [
-                'numbers'  => 'required', 
+                'numbers'   => 'required', 
+                'time'      => 'required'
             ];
             
             $validator = Validator::make($request->all(), $validationRules);
@@ -34,7 +35,7 @@ class NumberWinningController extends Controller
                     'user_id'       => authId(),
                     'amount'        => $value->amount,
                     'w_number'      => $value->w_number,
-                    'timezone'      => '1',
+                    'timezone'      => 1,
                 ]);
             }
              return $this->apiResponse('success', '200', 'Number '. config('constants.SUCESS.ADD_DONE')); 
