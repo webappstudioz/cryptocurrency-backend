@@ -29,6 +29,14 @@ class NumberWinningController extends Controller
             if ($validator->fails()) { 
                 return $this->apiResponse('error', '422', $validator->errors()->first());
             } 
+
+            $balance = 2500;
+            $totalAmount = array_sum(array_column($request->numbers, 'amount'));
+
+            if ($totalAmount > $balance) {
+                return $this->apiResponse('error', '400', 'Insufficient balance'); 
+            }
+        
            
             $timeZones = [
                 ['start' => '00:00', 'end' => '11:00'],
@@ -48,7 +56,7 @@ class NumberWinningController extends Controller
                 NumberWinning::create([
                     'user_id'       => authId(),
                     'amount'        => $value->amount,
-                    'w_number'      => $value->w_number,
+                    'w_number'      => $value->bet_number,
                     'timezone'      => $zone_id,
                 ]);
             }
